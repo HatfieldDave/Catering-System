@@ -14,6 +14,17 @@ namespace Capstone.Classes
     /// </remarks>
     public abstract class CateringItem
     {
+        public string ItemType { get; set; }
+        public string ItemCode { get; set; }
+        public string ItemName { get; set; }
+        public decimal ItemCost { get; set; }
 
+        public CateringItem(string itemType, string itemCode, string itemName, decimal itemCost)
+        {
+            this.ItemCode = itemCode;
+            this.ItemType = itemType;
+            this.ItemName = itemName;
+            this.ItemCost = itemCost;
+        }
     }
 }
