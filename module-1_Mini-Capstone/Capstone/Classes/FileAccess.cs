@@ -19,7 +19,7 @@ namespace Capstone.Classes
         private const string ReportFileName = @"totalsales.txt";
 
         public void ReadFromFile(CateringSystem catering)
-        {
+        { // try 
             using (StreamReader reader = new StreamReader(Path.Combine(DataDirectory, CateringFileName)))
             {
                 while (!reader.EndOfStream)

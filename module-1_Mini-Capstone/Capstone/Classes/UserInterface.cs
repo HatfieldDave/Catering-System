@@ -11,15 +11,14 @@ namespace Capstone.Classes
     public class UserInterface
     {
         private CateringSystem catering = new CateringSystem();
-
         private FileAccess cateringFile = new FileAccess();
-
+        // Money lives here.
         public void RunMainMenu()
         {
             
 
             cateringFile.ReadFromFile(catering);
-            catering.TestMethod();
+            //catering.TestMethod();
 
             bool done = false;
 
@@ -36,6 +35,8 @@ namespace Capstone.Classes
                 {
                     Console.WriteLine("You selected 1 to display items.");
                     // Do display catering items
+                    DisplayItems();
+
                 }
                 else if (userInput.Equals("2"))
                 {
@@ -72,6 +73,8 @@ namespace Capstone.Classes
                 {
                     Console.WriteLine("You selected 1. Enter Amount: ");
                     // Do display catering items
+                    //money.add(#)
+                    //FileAcces.LogDeposit(dollarAmount);
                 }
                 else if (userInput.Equals("2"))
                 {
@@ -88,6 +91,14 @@ namespace Capstone.Classes
                 {
                     Console.WriteLine("User input not valid.  Choose again.");
                 }
+            }
+        }
+        public void DisplayItems() 
+        {
+            string[] displayLines = catering.GetStringArray();
+            foreach(string line in displayLines)
+            {
+                Console.WriteLine(line);
             }
         }
     }
