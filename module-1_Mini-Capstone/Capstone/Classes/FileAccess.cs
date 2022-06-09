@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 
 namespace Capstone.Classes
 {
@@ -16,5 +17,21 @@ namespace Capstone.Classes
         // These files should be read from / written to in the DataDirectory
         private const string CateringFileName = @"cateringsystem.csv";
         private const string ReportFileName = @"totalsales.txt";
+
+        public void ReadFromFile(CateringSystem catering)
+        {
+            using (StreamReader reader = new StreamReader(Path.Combine(DataDirectory, CateringFileName)))
+            {
+                while (!reader.EndOfStream)
+                {
+                    string line = reader.ReadLine();
+
+                    string[] properties = line.Split("|");
+                    decimal costDecimal = decimal.Parse(properties[3]);
+                    BeverageItem newBeverage = new BeverageItem(properties[0], properties[1], properties[2], costDecimal, 10);
+                    catering.ItemSaver(newBeverage);
+                }
+            }
+        }
     }
 }

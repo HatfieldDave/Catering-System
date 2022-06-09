@@ -18,13 +18,21 @@ namespace Capstone.Classes
         public string ItemCode { get; set; }
         public string ItemName { get; set; }
         public decimal ItemCost { get; set; }
+        public int ItemQuantity { get; set; }
 
-        public CateringItem(string itemType, string itemCode, string itemName, decimal itemCost)
+        public CateringItem(string itemType, string itemCode, string itemName, decimal itemCost, int itemQuantity)
         {
             this.ItemCode = itemCode;
             this.ItemType = itemType;
             this.ItemName = itemName;
             this.ItemCost = itemCost;
+            this.ItemQuantity = itemQuantity;
+        }
+
+        public override string ToString()
+        {
+            string displayString = $"{ItemCode} || {ItemName} || {ItemCost} || {ItemQuantity}";
+            return displayString;
         }
     }
 }

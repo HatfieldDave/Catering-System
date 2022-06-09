@@ -6,8 +6,8 @@ namespace Capstone.Classes
 {
     class DessertItem : CateringItem
     {
-        public DessertItem(string itemType, string itemCode, string itemName, decimal itemCost)
-            : base(itemType, itemCode, itemName, itemCost)
+        public DessertItem(string itemType, string itemCode, string itemName, decimal itemCost, int itemQuantity)
+            : base(itemType, itemCode, itemName, itemCost, itemQuantity)
         {
 
         }

@@ -12,8 +12,15 @@ namespace Capstone.Classes
     {
         private CateringSystem catering = new CateringSystem();
 
+        private FileAccess cateringFile = new FileAccess();
+
         public void RunMainMenu()
         {
+            
+
+            cateringFile.ReadFromFile(catering);
+            catering.TestMethod();
+
             bool done = false;
 
             while (!done)
