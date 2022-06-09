@@ -10,6 +10,7 @@ namespace Capstone.Classes
     public class CateringSystem 
     {
         private readonly List<CateringItem> items = new List<CateringItem>();
+        private Dictionary<string, CateringItem> itemDict = new Dictionary<string, CateringItem>();
         
         public void TestMethod()
         {
@@ -27,7 +28,7 @@ namespace Capstone.Classes
         /// Creates an array of strings based of the ToString method of each CateringItem
         /// </summary>
         /// <returns>string[]</returns>
-       public string[] GetStringArray()
+       public string[] GetStringArray() // TODO Make something like this that works for a dictionary.
         {
             
             string[] lines = new string[items.Count]; 
@@ -45,6 +46,11 @@ namespace Capstone.Classes
         public void ItemSaver(BeverageItem beverage)
         {
             items.Add(beverage);
+        }
+
+        public void ItemSaver2(BeverageItem beverage)
+        {
+            itemDict[beverage.ItemCode] = beverage;
         }
     }
 }

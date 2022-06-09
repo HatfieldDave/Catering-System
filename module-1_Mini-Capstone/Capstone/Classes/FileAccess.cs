@@ -29,9 +29,12 @@ namespace Capstone.Classes
                     string[] properties = line.Split("|");
                     decimal costDecimal = decimal.Parse(properties[3]);
                     BeverageItem newBeverage = new BeverageItem(properties[0], properties[1], properties[2], costDecimal, 10);
-                    catering.ItemSaver(newBeverage);
+                    //catering.ItemSaver(newBeverage);
+
+                    catering.ItemSaver2(newBeverage);
                 }
             }
         }
     }
 }
+
