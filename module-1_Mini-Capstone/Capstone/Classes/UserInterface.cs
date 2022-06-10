@@ -157,7 +157,7 @@ namespace Capstone.Classes
                 return;
             }
 
-            catering.DoOrder(itemCode, amount);
+            catering.DoOrder(itemCode, amount); // Once all the checks are complete changes the number of quantity of the related CateringItem as well as the apprpriate amount of money
 
         }
     }
