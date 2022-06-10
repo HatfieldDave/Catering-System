@@ -12,10 +12,9 @@ namespace Capstone.Classes
     {
         private CateringSystem catering = new CateringSystem();
         private FileAccess cateringFile = new FileAccess();
-        // Money lives here.
         public void RunMainMenu()
         {
-            
+
 
             cateringFile.ReadFromFile(catering);
             //catering.TestMethod();
@@ -72,14 +71,29 @@ namespace Capstone.Classes
                 if (userInput.Equals("1"))
                 {
                     Console.WriteLine("You selected 1. Enter Amount: ");
-                    // Do display catering items
-                    //money.add(#)
-                    //FileAcces.LogDeposit(dollarAmount);
+                    string moneyToAdd = Console.ReadLine();
+                    int amount = int.Parse(moneyToAdd);
+
+                    if (amount < 1)  // If amount is less than 1 can not enter less than one
+                    {
+                        Console.WriteLine("Can not enter a value less than one");
+                    }
+                    else if (amount + catering.Balance > 1000) // Balnce can't be over 1000
+                    {
+                        catering.Balance = 1000;
+                        Console.WriteLine("Too much entered.  Balance set to 1000");
+                    }
+                    else // If everythings good add amount
+                    {
+                        catering.AddMoney(amount);
+                        Console.WriteLine("Balance updated, new balance is: " + catering.Balance);
+                    }
                 }
                 else if (userInput.Equals("2"))
                 {
                     Console.WriteLine("You selected 2.  Select Product: ");
-                    // Do Order
+
+
                 }
                 else if (userInput.Equals("3"))
                 {
@@ -93,10 +107,10 @@ namespace Capstone.Classes
                 }
             }
         }
-        public void DisplayItems() 
+        public void DisplayItems()
         {
             string[] displayLines = catering.GetStringArray();
-            foreach(string line in displayLines)
+            foreach (string line in displayLines)
             {
                 Console.WriteLine(line);
             }

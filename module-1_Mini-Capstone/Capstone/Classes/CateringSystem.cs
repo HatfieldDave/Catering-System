@@ -9,34 +9,63 @@ namespace Capstone.Classes
     /// </summary>
     public class CateringSystem 
     {
-        private readonly List<CateringItem> items = new List<CateringItem>();
+        //private readonly List<CateringItem> items = new List<CateringItem>();
         private Dictionary<string, CateringItem> itemDict = new Dictionary<string, CateringItem>();
-        
-        public void TestMethod()
-        {
-            //BeverageItem drink = new BeverageItem("B", "B1", "Faygo", 30.00m, 100);
-            //items.Add(drink);
+        private List<CateringItem> cart = new List<CateringItem>();
 
-           // Console.WriteLine(drink);
-           foreach(CateringItem item in items)
+        public decimal Balance { get; set; }
+
+        public void AddMoney(int amount)
+        {
+            Balance += amount;
+        }
+
+        public void RemoveMoney(int amount)
+        {
+            Balance -= amount;
+        }
+
+        public void ClearBalance()
+        {
+            Balance = 0;
+        }
+
+        public bool ContainsItem(string userSelection)
+        {
+            if (itemDict.ContainsKey(userSelection))
             {
-                
+                return true;
             }
+            return false;
+        }
+
+        public bool InStock(string userSelection)
+        {
+            if(itemDict[userSelection].ItemQuantity > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public void DoOrder()
+        {
+
         }
 
         /// <summary>
         /// Creates an array of strings based of the ToString method of each CateringItem
         /// </summary>
-        /// <returns>string[]</returns>
+        /// <returns>string[] lines</returns>
        public string[] GetStringArray() // TODO Make something like this that works for a dictionary.
         {
             
-            string[] lines = new string[items.Count]; 
+            string[] lines = new string[itemDict.Count]; 
 
             int i = 0;
-            foreach (CateringItem item in items)
+            foreach (KeyValuePair<string,CateringItem> item in itemDict)
             {
-                string line = item.ToString();
+                string line = item.Value.ToString();
                 lines[i] = line;
                 i++;
             }
@@ -45,7 +74,7 @@ namespace Capstone.Classes
         
         public void ItemSaver(BeverageItem beverage)
         {
-            items.Add(beverage);
+            //items.Add(beverage);
         }
 
         public void ItemSaver2(BeverageItem beverage)

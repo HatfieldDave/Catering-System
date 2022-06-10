@@ -1,4 +1,4 @@
-﻿using Capstone.Classes;
+﻿/*using Capstone.Classes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CapstoneTests
@@ -56,4 +56,4 @@ namespace CapstoneTests
             // Assert
         }
     }
-}
+}*/
