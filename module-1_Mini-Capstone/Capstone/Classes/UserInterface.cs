@@ -65,7 +65,8 @@ namespace Capstone.Classes
                 Console.WriteLine("(1) Add Money.");
                 Console.WriteLine("(2) Select Products");
                 Console.WriteLine("(3) Complete Transaction");
-                Console.WriteLine("Current Account Balance: " + "");
+
+                Console.WriteLine("Current Account Balance: " + catering.Balance);
                 userInput = Console.ReadLine();
 
                 if (userInput.Equals("1"))
@@ -91,9 +92,7 @@ namespace Capstone.Classes
                 }
                 else if (userInput.Equals("2"))
                 {
-                    Console.WriteLine("You selected 2.  Select Product: ");
-
-
+                    MakePurchase();
                 }
                 else if (userInput.Equals("3"))
                 {
@@ -114,6 +113,50 @@ namespace Capstone.Classes
             {
                 Console.WriteLine(line);
             }
+        }
+
+        public void MakePurchase()
+        {
+            if (catering.Balance == 0) // Can't place an order if you don't have a balance
+            {
+                Console.WriteLine("You must have a balance.");
+                return;
+            }
+
+            Console.Write("You selected 2.  Enter Item Code: "); // Takes user input for the item code
+            string itemCode = Console.ReadLine().ToUpper();
+
+
+            if (!catering.ContainsItem(itemCode)) // Checks that the item code is valid
+            {
+                Console.WriteLine("Invalid selection.  Choose another item");
+                return;
+            }
+
+            if (!catering.InStock(itemCode)) // Checks that the indicated item is in stock
+            {
+                Console.WriteLine("Item is out of stock.");
+                return;
+            }
+
+            Console.Write("Select amount: ");  // Takes user input for the desired amount of the item
+            string amountString = Console.ReadLine();
+            int amount = int.Parse(amountString);
+
+            if (!catering.HasEnough(itemCode, amount))  // Checks to make sure that there is enough of the item avaible
+            {
+                Console.WriteLine("Not enough Available.");
+                return;
+            }
+
+            if (!catering.SufficientFunds(itemCode, amount)) // Checks to make sure the user has enough money
+            {
+                Console.WriteLine("Insufficient Funds");
+                return;
+            }
+
+
+
         }
     }
 }

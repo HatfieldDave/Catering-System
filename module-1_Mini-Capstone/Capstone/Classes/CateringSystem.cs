@@ -13,7 +13,7 @@ namespace Capstone.Classes
         private Dictionary<string, CateringItem> itemDict = new Dictionary<string, CateringItem>();
         private List<CateringItem> cart = new List<CateringItem>();
 
-        public decimal Balance { get; set; }
+        public decimal Balance { get; set; } = 0;
 
         public void AddMoney(int amount)
         {
@@ -41,7 +41,28 @@ namespace Capstone.Classes
 
         public bool InStock(string userSelection)
         {
-            if(itemDict[userSelection].ItemQuantity > 0)
+            if(itemDict[userSelection].ItemQuantity != 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool HasEnough(string userSelection, int itemQuantity)
+        {
+            if(itemDict[userSelection].ItemQuantity > itemQuantity) 
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool SufficientFunds(string userSelection, int itemQuantity)
+        {
+            decimal itemPrice = itemDict[userSelection].ItemCost;
+            decimal total = itemPrice * itemQuantity;
+
+            if(Balance >= total)
             {
                 return true;
             }
