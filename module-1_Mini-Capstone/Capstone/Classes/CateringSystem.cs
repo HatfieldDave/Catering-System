@@ -185,5 +185,22 @@ namespace Capstone.Classes
         {
             itemDict[cateringItem.ItemCode] = cateringItem;
         }
+
+        public List<CateringItem> GiveReceipt()
+        {
+            return cart;
+        }
+        public int ChangeGetter(Decimal denomination)
+        {
+            int count = 0;
+
+            while(Balance >= denomination)
+            {
+                count += 1;
+                Balance -= denomination;
+            }
+
+            return count;
+        }
     }
 }

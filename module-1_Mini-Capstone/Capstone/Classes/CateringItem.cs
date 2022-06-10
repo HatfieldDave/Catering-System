@@ -31,7 +31,7 @@ namespace Capstone.Classes
 
         public override string ToString()
         {
-            string displayString = $"{ItemCode} {ItemName.PadRight(25)} {ItemCost.ToString().PadRight(10)} {ItemQuantity.ToString().PadRight(2)}";
+            string displayString = $"{ItemCode} {ItemName.PadRight(25)} {ItemCost.ToString().PadRight(10)} {ItemQuantity.ToString()}";
             return displayString;
         }
     }

@@ -34,19 +34,22 @@ namespace Capstone.Classes
                 if (userInput.Equals("1"))
                 {
                     Console.WriteLine("You selected 1 to display items.");
+                    Console.WriteLine("");
                     // Do display catering items
                     DisplayItems();
+                    Console.WriteLine("You selected 2.  Place your order.");
+                    Console.WriteLine("");
 
                 }
                 else if (userInput.Equals("2"))
                 {
-                    Console.WriteLine("You selected 2.  Place your order.");
                     RunOrderMenu();
                     // Do Order
                 }
                 else if (userInput.Equals("3"))
                 {
                     Console.WriteLine("You selected 3.  Exiting program.");
+                    Console.WriteLine("");
                     done = true; // Exits the program
                 }
                 else
@@ -55,6 +58,10 @@ namespace Capstone.Classes
                 }
             }
         }
+
+        /// <summary>
+        /// Contains all the logic necessary for the order menu
+        /// </summary>
         public void RunOrderMenu()
         {
             String userInput;
@@ -63,16 +70,20 @@ namespace Capstone.Classes
 
             while (!done)
             {
+                Console.WriteLine("You selected 2.  Place your order.");
+                Console.WriteLine("");
+
                 Console.WriteLine("(1) Add Money.");
                 Console.WriteLine("(2) Select Products");
                 Console.WriteLine("(3) Complete Transaction");
 
-                Console.WriteLine("Current Account Balance: " + catering.Balance);
+                Console.WriteLine("Current Account Balance: " + catering.Balance.ToString("c"));
                 userInput = Console.ReadLine();
 
                 if (userInput.Equals("1"))
                 {
                     Console.WriteLine("You selected 1. Enter Amount: ");
+                    Console.WriteLine("");
                     string moneyToAdd = Console.ReadLine();
                     int amount = int.Parse(moneyToAdd);
 
@@ -98,8 +109,10 @@ namespace Capstone.Classes
                 else if (userInput.Equals("3"))
                 {
                     Console.WriteLine("You selected 3.  Checking out and returning to main menu");
+                    Console.WriteLine("");
                     // Return change
-                    done = true; // Exits the program
+                    CompleteOrder();
+                    done = true; 
                 }
                 else
                 {
@@ -124,7 +137,8 @@ namespace Capstone.Classes
                 return;
             }
 
-            Console.Write("You selected 2.  Enter Item Code: "); // Takes user input for the item code
+            Console.Write("You selected 2.  Enter Item Code: ");
+            Console.WriteLine("");// Takes user input for the item code
             string itemCode = Console.ReadLine().ToUpper();
 
 
@@ -141,6 +155,7 @@ namespace Capstone.Classes
             }
 
             Console.Write("Select amount: ");  // Takes user input for the desired amount of the item
+            Console.WriteLine("");
             string amountString = Console.ReadLine();
             int amount = int.Parse(amountString);
 
@@ -158,7 +173,79 @@ namespace Capstone.Classes
             }
 
             catering.DoOrder(itemCode, amount); // Once all the checks are complete changes the number of quantity of the related CateringItem as well as the apprpriate amount of money
+        }
 
+        /// <summary>
+        /// Displays the customers order to the screen and prepares the CateringSystem for the next customer
+        /// </summary>
+        public void CompleteOrder()
+        {
+            List <CateringItem> receipt = catering.GiveReceipt();
+
+            foreach(CateringItem item in receipt)
+            {
+                decimal itemTotal = item.ItemCost * item.ItemQuantity; // Total cost of this item
+
+                // Do a bunch of stuff to make it look good
+                string itemCostPadded = item.ItemCost.ToString("c").PadRight(6);
+                string itemTotalPadded = itemTotal.ToString("c").PadRight(4);
+                string itemTypePadded = "";
+                string itemNamePadded = item.ItemName.PadRight(25);
+                string itemQuantityPadded = item.ItemQuantity.ToString().PadRight(2);
+
+                decimal remainingBalance = catering.Balance;  // Stores balance for use in logging
+
+                // Determining the amount of each denomination of money that the user receives in change
+                int twenties = catering.ChangeGetter(20.00m);
+                int tens = catering.ChangeGetter(10.00m);
+                int fives = catering.ChangeGetter(5.00m);
+                int ones = catering.ChangeGetter(1.00m);
+                int quarters = catering.ChangeGetter(.25m);
+                int dimes = catering.ChangeGetter(.10m);
+                int nickels = catering.ChangeGetter(.05m);
+
+                Console.WriteLine("Your change is: ");
+                Console.WriteLine(twenties + " Twenties");
+                Console.WriteLine(tens + " Tens");
+                Console.WriteLine(fives + " Fives");
+                Console.WriteLine(ones + " ones");
+                Console.WriteLine(quarters + " quarters");
+                Console.WriteLine(dimes + " dimes");
+                Console.WriteLine("and " + nickels +" nickels.");
+                Console.WriteLine("");
+
+                // Determine longform ItemType name
+                if (item.ItemType.Equals("A"))
+                {
+                    itemTypePadded = "Appetizer";
+                    itemTypePadded = itemTypePadded.PadRight(10);
+                }
+                if (item.ItemType.Equals("B"))
+                {
+                    itemTypePadded = "Beverage";
+                    itemTypePadded = itemTypePadded.PadRight(10);
+                }
+                if (item.ItemType.Equals("D"))
+                {
+                    itemTypePadded = "Dessert";
+                    itemTypePadded = itemTypePadded.PadRight(10);
+                }
+                if (item.ItemType.Equals("E"))
+                {
+                    itemTypePadded = "Entree";
+                    itemTypePadded = itemTypePadded.PadRight(10);
+                }
+
+                // Create string for printing
+                string lineString = $"{itemQuantityPadded} {itemTypePadded} {itemNamePadded} {itemCostPadded} {itemTotalPadded} ";
+
+                Console.WriteLine(lineString);
+            }
+
+            Console.WriteLine("");
+            Console.WriteLine("Total: " + catering.Total.ToString("c"));
+
+            catering.ClearCartAndBalance();
         }
     }
 }
