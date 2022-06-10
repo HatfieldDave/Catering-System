@@ -12,6 +12,18 @@ namespace Capstone.Classes
         //private readonly List<CateringItem> items = new List<CateringItem>();
         private Dictionary<string, CateringItem> itemDict = new Dictionary<string, CateringItem>();
         private List<CateringItem> cart = new List<CateringItem>();
+        public decimal Total
+        {
+            get
+            {
+                decimal total = 0;
+                foreach (CateringItem item in cart)
+                {
+                    total += item.ItemCost * item.ItemQuantity;
+                }
+                return total;
+            }
+        }
 
         public decimal Balance { get; set; } = 0;
 
@@ -48,9 +60,9 @@ namespace Capstone.Classes
             return false;
         }
 
-        public bool HasEnough(string userSelection, int itemQuantity)
+        public bool SufficientStock(string userSelection, int itemQuantity)
         {
-            if(itemDict[userSelection].ItemQuantity > itemQuantity) 
+            if(itemDict[userSelection].ItemQuantity >= itemQuantity) 
             {
                 return true;
             }
@@ -69,10 +81,15 @@ namespace Capstone.Classes
             return false;
         }
 
-        public void DoOrder()
+        public void DoOrder(string userSelection, int itemQuantity)
         {
-
+            itemDict[userSelection].ItemQuantity -= itemQuantity;
+            Balance -= itemDict[userSelection].ItemCost * itemQuantity;
+            BeverageItem soda = new BeverageItem(itemDict[userSelection].ItemType, itemDict[userSelection].ItemCode, itemDict[userSelection].ItemName, itemDict[userSelection].ItemCost, itemQuantity);
+            cart.Add(soda);
         }
+
+
 
         /// <summary>
         /// Creates an array of strings based of the ToString method of each CateringItem
@@ -93,12 +110,8 @@ namespace Capstone.Classes
             return lines;
         }
         
-        public void ItemSaver(BeverageItem beverage)
-        {
-            //items.Add(beverage);
-        }
 
-        public void ItemSaver2(BeverageItem beverage)
+        public void ItemSaver(BeverageItem beverage)
         {
             itemDict[beverage.ItemCode] = beverage;
         }

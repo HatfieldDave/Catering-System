@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 
 namespace Capstone.Classes
 {
@@ -143,7 +144,8 @@ namespace Capstone.Classes
             string amountString = Console.ReadLine();
             int amount = int.Parse(amountString);
 
-            if (!catering.HasEnough(itemCode, amount))  // Checks to make sure that there is enough of the item avaible
+
+            if (!catering.SufficientStock(itemCode, amount))  // Checks to make sure that there is enough of the item avaible
             {
                 Console.WriteLine("Not enough Available.");
                 return;
@@ -155,7 +157,7 @@ namespace Capstone.Classes
                 return;
             }
 
-
+            catering.DoOrder(itemCode, amount);
 
         }
     }
