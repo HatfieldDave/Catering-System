@@ -51,6 +51,7 @@ namespace Capstone.Classes
                     Console.WriteLine("You selected 3.  Exiting program.");
                     Console.WriteLine("");
                     done = true; // Exits the program
+                    cateringFile.WriteLog();
                 }
                 else
                 {
@@ -70,51 +71,60 @@ namespace Capstone.Classes
 
             while (!done)
             {
-                Console.WriteLine("You selected 2.  Place your order.");
-                Console.WriteLine("");
-
-                Console.WriteLine("(1) Add Money.");
-                Console.WriteLine("(2) Select Products");
-                Console.WriteLine("(3) Complete Transaction");
-
-                Console.WriteLine("Current Account Balance: " + catering.Balance.ToString("c"));
-                userInput = Console.ReadLine();
-
-                if (userInput.Equals("1"))
+                try
                 {
-                    Console.WriteLine("You selected 1. Enter Amount: ");
+                    Console.WriteLine("You selected 2.  Place your order.");
                     Console.WriteLine("");
-                    string moneyToAdd = Console.ReadLine();
-                    int amount = int.Parse(moneyToAdd);
 
-                    if (amount < 1)  // If amount is less than 1 can not enter less than one
+                    Console.WriteLine("(1) Add Money.");
+                    Console.WriteLine("(2) Select Products");
+                    Console.WriteLine("(3) Complete Transaction");
+
+                    Console.WriteLine("Current Account Balance: " + catering.Balance.ToString("c"));
+                    userInput = Console.ReadLine();
+
+                    if (userInput.Equals("1"))
                     {
-                        Console.WriteLine("Can not enter a value less than one");
+                        Console.WriteLine("You selected 1. Enter Amount: ");
+                        Console.WriteLine("");
+                        string moneyToAdd = Console.ReadLine();
+                        int amount = int.Parse(moneyToAdd);
+
+                        if (amount < 1)  // If amount is less than 1 can not enter less than one
+                        {
+                            Console.WriteLine("Can not enter a value less than one");
+                        }
+                        else if (amount + catering.Balance > 1000) // Balnce can't be over 1000
+                        {
+                            catering.Balance = 1000;
+                            cateringFile.Log("ADD MONEY", 1000 - catering.Balance, catering.Balance); // 1000 minus the catering balance is the actual amount the balance changed in this case
+                            Console.WriteLine("Too much entered.  Balance set to 1000");
+                        }
+                        else // If everythings good add amount
+                        {
+                            catering.AddMoney(amount);
+                            cateringFile.Log("ADD MONEY", amount, catering.Balance);
+                            Console.WriteLine("Balance updated, new balance is: " + catering.Balance);
+                        }
                     }
-                    else if (amount + catering.Balance > 1000) // Balnce can't be over 1000
+                    else if (userInput.Equals("2"))
                     {
-                        catering.Balance = 1000;
-                        Console.WriteLine("Too much entered.  Balance set to 1000");
+                        MakePurchase();
                     }
-                    else // If everythings good add amount
+                    else if (userInput.Equals("3"))
                     {
-                        catering.AddMoney(amount);
-                        Console.WriteLine("Balance updated, new balance is: " + catering.Balance);
+                        Console.WriteLine("You selected 3.  Checking out and returning to main menu");
+                        Console.WriteLine("");
+                        // Return change
+                        CompleteOrder();
+                        done = true;
                     }
-                }
-                else if (userInput.Equals("2"))
-                {
-                    MakePurchase();
-                }
-                else if (userInput.Equals("3"))
-                {
-                    Console.WriteLine("You selected 3.  Checking out and returning to main menu");
-                    Console.WriteLine("");
-                    // Return change
-                    CompleteOrder();
-                    done = true; 
-                }
-                else
+                    else
+                    {
+                        Console.WriteLine("User input not valid.  Choose again.");
+                    }
+                } 
+                catch (FormatException ex)
                 {
                     Console.WriteLine("User input not valid.  Choose again.");
                 }
@@ -141,7 +151,6 @@ namespace Capstone.Classes
             Console.WriteLine("");// Takes user input for the item code
             string itemCode = Console.ReadLine().ToUpper();
 
-
             if (!catering.ContainsItem(itemCode)) // Checks that the item code is valid
             {
                 Console.WriteLine("Invalid selection.  Choose another item");
@@ -159,6 +168,12 @@ namespace Capstone.Classes
             string amountString = Console.ReadLine();
             int amount = int.Parse(amountString);
 
+            if(amount <= 0)
+            {
+                Console.WriteLine("You must enter a whole number larger than 0");
+                return;
+            }
+
 
             if (!catering.SufficientStock(itemCode, amount))  // Checks to make sure that there is enough of the item avaible
             {
@@ -172,7 +187,10 @@ namespace Capstone.Classes
                 return;
             }
 
-            catering.DoOrder(itemCode, amount); // Once all the checks are complete changes the number of quantity of the related CateringItem as well as the apprpriate amount of money
+            CateringItem purchasedItem = catering.DoOrder(itemCode, amount); // Once all the checks are complete changes the number of quantity of the related CateringItem as well as the apprpriate amount of money
+            decimal totalAmount = purchasedItem.ItemCost * purchasedItem.ItemQuantity;
+            string logString = purchasedItem.ItemQuantity + " " + purchasedItem.ItemName + " " + purchasedItem.ItemCode;
+            cateringFile.Log(logString, totalAmount, catering.Balance);
         }
 
         /// <summary>
@@ -181,8 +199,9 @@ namespace Capstone.Classes
         public void CompleteOrder()
         {
             List <CateringItem> receipt = catering.GiveReceipt();
+            decimal remainingBalance = catering.Balance;  // Stores balance for use in logging
 
-            foreach(CateringItem item in receipt)
+            foreach (CateringItem item in receipt)
             {
                 decimal itemTotal = item.ItemCost * item.ItemQuantity; // Total cost of this item
 
@@ -193,7 +212,7 @@ namespace Capstone.Classes
                 string itemNamePadded = item.ItemName.PadRight(25);
                 string itemQuantityPadded = item.ItemQuantity.ToString().PadRight(2);
 
-                decimal remainingBalance = catering.Balance;  // Stores balance for use in logging
+                
 
                 // Determining the amount of each denomination of money that the user receives in change
                 int twenties = catering.ChangeGetter(20.00m);
@@ -244,6 +263,8 @@ namespace Capstone.Classes
 
             Console.WriteLine("");
             Console.WriteLine("Total: " + catering.Total.ToString("c"));
+
+            cateringFile.Log("GIVE CHANGE:", remainingBalance, catering.Balance);
 
             catering.ClearCartAndBalance();
         }

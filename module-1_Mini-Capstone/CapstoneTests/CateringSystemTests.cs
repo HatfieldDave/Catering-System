@@ -34,7 +34,7 @@ namespace CapstoneTests
         }
 
         [TestMethod]
-        public void ClearBalance()
+        public void ClearCartAndBalanceShouldClear()
         {
             // Arrange 
             CateringSystem catering = new CateringSystem();
